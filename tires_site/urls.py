@@ -21,8 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('product/', include('product.urls')),  # Подключение маршрутов вашего приложения
-    path('reg/', include('reg.urls'))
+    path('cart/', include('cart.urls')),  # Подключаем urls для корзины
+    path('product/', include('product.urls')),  # Пример для других приложений
+    path('reg/', include('reg.urls')),
+   # Пример для других приложений
 ]
 
 # Добавляем маршруты для медиафайлов

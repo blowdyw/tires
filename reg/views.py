@@ -1,12 +1,12 @@
 # reg/views.py
-from django.contrib.auth import authenticate
 from rest_framework import generics, status
+from django.contrib.auth import authenticate
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from .serializers import LoginSerializer, UserRegisterSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .serializers import LoginSerializer, UserRegisterSerializer, UserProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
-
+from .models import UserProfile
 
 class UserRegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
@@ -51,9 +51,11 @@ class UserLoginView(generics.GenericAPIView):
                 "refresh": str(refresh),
             }, status=status.HTTP_200_OK)
         else:
-            return Response({"error": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "Неверный email или пароль."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class CustomTokenObtainPairView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -68,4 +70,15 @@ class CustomTokenObtainPairView(APIView):
                 "refresh": str(refresh)
             }, status=status.HTTP_200_OK)
 
-        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"detail": "Неверный email или пароль."}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+class UserProfileDetailView(generics.RetrieveUpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.userprofile
+

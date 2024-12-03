@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'reg',
     'django_filters',
+    'cart',
+    'rest_framework_simplejwt',
+
 ]
 
 MIDDLEWARE = [
@@ -139,6 +142,7 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'# settings.py
+MEDIA_URL = '/media/'  # URL для медиафайлов
+MEDIA_ROOT = BASE_DIR / 'media'  # Папка, где хранятся файлы
+

@@ -1,4 +1,5 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+# models.py
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 class CustomUserManager(BaseUserManager):
@@ -30,21 +31,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)  # Поле для суперпользователя
 
-    groups = models.ManyToManyField(
-        Group,
-        related_name='customuser_set',  # Уникальное имя для обратной ссылки
-        blank=True,
-        help_text='Группы, к которым принадлежит пользователь.',
-        related_query_name='customuser',
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='customuser_set',  # Уникальное имя для обратной ссылки
-        blank=True,
-        help_text='Специфические разрешения для этого пользователя.',
-        related_query_name='customuser',
-    )
-
     USERNAME_FIELD = 'email'  # Используем email как имя пользователя
     REQUIRED_FIELDS = []  # Оставьте пустым, если не требуется дополнительных полей
 
@@ -52,3 +38,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+# Добавление модели UserProfile
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)  # Имя
+    surname = models.CharField(max_length=255)  # Фамилия
+    patronymic = models.CharField(max_length=255, blank=True)  # Отчество (необязательное)
+    number = models.CharField(max_length=15, blank=True)  # Номер телефона (необязательный)
+
+    def __str__(self):
+        return f"{self.name} {self.surname} {self.patronymic}"
